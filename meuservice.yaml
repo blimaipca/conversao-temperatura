@@ -1,0 +1,35 @@
+#parte do deployment
+apiVersion: apps/v1 #grupo de recursos
+kind: Deployment #Objeto que esta a ser usado
+metadata: #etadados do objeto
+  name: meudeployment
+spec: #especificacao do objeto
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template: 
+    metadata:
+      labels:
+        app: web
+    spec: #especificacao do objeto (basicamento o que temos no POD)
+      containers: 
+        - name: web
+          image: brunotslima/conversao-temperatura:v1
+          ports:
+            - containerPort: 80
+---
+#parte do service
+apiVersion: v1 #grupo de recursos
+kind: Service #Objeto que esta a ser usado
+metadata: #etadados do objeto
+  name: web
+spec: #especificacao do objeto
+  selector:
+    app: web
+  ports:
+    - port: 8080
+      targetPort: 80
+      nodePort: 30000
+  type: NodePort
+  #type: ClusterIP #caso seja serviço na nuvem
